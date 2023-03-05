@@ -1,0 +1,69 @@
+---
+title: "BAN502_Mod3_Assn1"
+author: "Jillian Warfel"
+date: "2023-02-03"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r Loading Packages and Datasets}
+install.packages("tidyverse")
+install.packages("tidymodels")
+install.packages("lubridate")
+
+library("tidyverse")
+library("tidymodels")
+library("lubridate")
+
+bike <- read_csv("C:/Users/jeler/Downloads/bike_cleaned-4.csv")
+```
+
+```{r Mutate data}
+bike = bike %>% mutate(dteday = mdy(dteday))
+bike = bike %>% mutate_if(is.character, as_factor)
+bike = bike %>% mutate(hr = as_factor(hr))
+```
+
+```{r}
+set.seed(1234)
+bike_split = initial_split(bike, prop = 0.70, strata = count)
+train = training(bike_split)
+test = testing(bike_split)
+```
+Q1 - Training 12163 rows
+Q2 - Similarly represented
+
+```{r Tidymodels recipe}
+train_recipe = recipe(count ~ season + mnth + hr + holiday + weekday + temp + weathersit, train)
+```
+
+
+```{r Tidymodels model}
+lm_model = #give the model type a name 
+  linear_reg() %>% #specify that we are doing linear regression
+  set_engine("lm") #specify the specify type of linear tool we want to use 
+```
+
+```{r Tidymodels workflow}
+lm_wflow = 
+  workflow() %>% 
+  add_model(lm_model) %>% 
+  add_recipe(train_recipe)
+
+lm_fit = fit(lm_wflow, train)
+
+summary(lm_fit$fit$fit$fit) #three fits :), the actual fit is embedded deeply in the object
+
+```
+Q3 - .6209
+Q4 - Max rides 600 and some are negative
+
+```{r}
+ lm_fit %>% predict(test) %>% bind_cols(test) %>% metrics(truth = count, estimate =.pred)
+ ggplot(data = test, aes(x = .pred, y = count)) +
+  geom_histogram()
+
+```
+
+Q5 - .627

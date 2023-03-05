@@ -1,0 +1,86 @@
+---
+output:
+  word_document: default
+  html_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r Loading Packages and Datasets}
+install.packages("tidyverse")
+library("tidyverse")
+```
+
+
+```{r Q1 & Q2}
+diamonddata <- diamonds
+nrow(diamonddata)
+ncol(diamonddata)
+```
+
+```{r Q3}
+ggplot(data = diamonddata, aes(x = carat, y = price)) +
+  geom_point()
+```
+###Q#3 - B - As Carat Increases, Price Increases
+
+```{r Q4}
+ggplot(data = diamonddata, aes(x = cut, y = price)) +
+  geom_point()
+```
+
+
+```{r Q4}
+aggregate(price ~ cut, diamonddata, mean)
+```
+
+###Q4 - C - Does not change
+
+```{r Q5}
+library(ggplot2)
+ggplot(data = diamonddata, aes(x = color, y = price)) +
+  geom_point() +
+  facet_grid(color ~ .)
+```
+###Q5 - C - Creates for each color
+```{r Q6}
+library(readr)
+inventory <- read_csv("C:/Users/jeler/OneDrive/Desktop/MBA/BAN 502/InventoryData.csv")
+```
+###Q6 - D - character
+
+```{r Q7}
+mean(inventory$`On Hand`)
+```
+
+###Q7 - Number of units available
+
+
+```{r Q8}
+inventorya <- select (filter(inventory, Supplier == "A"), `Item SKU`, Store, Supplier, `Cost per Unit ($)`, `On Hand`,`Annual Demand`)
+nrow(inventorya)
+```
+
+###Q8 - 3695 rows
+
+```{r Q9}
+inventorya = mutate(inventorya, OnHandRatio = `On Hand` / `Annual Demand`)
+
+
+```
+###Q9 - Adds a columns to inventorya where it displays the On Hand Ratio, the portion of On Hand units our of the Annual Demanded
+
+```{r Q10}
+
+avg_cost = aggregate(`Cost per Unit ($)` ~ `Item SKU`, inventorya, mean)
+  
+```
+###Q10 $12.33
+
+```{r}
+X=2
+```
+
+
+```{r}
+```

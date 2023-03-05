@@ -1,0 +1,95 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r Loading Packages and Datasets}
+install.packages("tidyverse")
+install.packages("tidymodels")
+install.packages("GGally")
+install.packages("IMTest")
+install.packages("lmtest")
+library("tidyverse")
+library("tidymodels")
+library("GGally")
+library("IMTest")
+library("lmtest")
+
+air = airquality
+```
+
+```{r Q1/Q2}
+summary(air)
+nrow(air)
+ncol(air)
+```
+Q1 - 153
+Q2 - 6
+Q3 - True
+Q4 - Solar.R
+```{r}
+air2 = air %>% drop_na()
+
+```
+
+```{r}
+summary(air2)
+nrow(air2)
+ncol(air2)
+```
+
+Q5 - 111
+Q6 - 6
+
+```{r}
+ggpairs(air2)
+ggcorr(air2, label = TRUE)
+```
+Q7 - Temp
+Q8 - Day
+
+```{r}
+ggplot(data = air2, aes(x = Temp, y = Ozone)) +
+  geom_point()
+```
+
+Q9 - C - As temp increases, Ozone increases
+
+```{r Tidymodels recipe}
+air2_simple = recipe( Ozone ~ Temp, air2)
+```
+
+
+```{r Tidymodels model}
+lm_model = #give the model type a name 
+  linear_reg() %>% #specify that we are doing linear regression
+  set_engine("lm") #specify the specify type of linear tool we want to use 
+```
+
+```{r Tidymodels workflow}
+lm_wflow = 
+  workflow() %>% 
+  add_model(lm_model) %>% 
+  add_recipe(air2_simple)
+
+lm_fit = fit(lm_wflow, air2)
+
+summary(lm_fit$fit$fit$fit) #three fits :), the actual fit is embedded deeply in the object
+
+```
+
+Q10 - 2.4391
+Q11 - .488
+Q12 - Yes
+
+```{r}
+confint(lm_fit$fit$fit$fit)
+
+```
+Q13 - False
+Q14 - -147.6461 + 2.4391 (80) = 47.48
+
+```{r}
+dwtest(lm_fit$fit$fit$fit)
+```
+Q15 - True, becasue p-value is large
